@@ -18,5 +18,5 @@ jobs:
           # Enable SSH service
           sudo systemctl start ssh
           
-          # Start Pinggy TCP tunnel (No Token / No Card required)
-          ssh -p 443 -R0:localhost:22 qr@a.pinggy.io
+          # Start Pinggy TCP tunnel without host verification check
+          ssh -o StrictHostKeyChecking=no -p 443 -R0:localhost:22 qr@a.pinggy.io
