@@ -10,19 +10,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup SSH & Ngrok
-        env:
-          NGROK_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+      - name: Setup SSH & Pinggy Tunnel
         run: |
-          # Set password for runner user (Termius login-u vendi)
+          # Set password for runner user
           echo "runner:123456" | sudo chpasswd
           
-          # Install Ngrok
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-          sudo apt update && sudo apt install ngrok -y
+          # Enable SSH service
+          sudo systemctl start ssh
           
-          # Configure Ngrok and Start SSH Tunnel
-          ngrok config add-authtoken $NGROK_TOKEN
-          ngrok tcp 22
-          
+          # Start Pinggy TCP tunnel (No Token / No Card required)
+          ssh -p 443 -R0:localhost:22 qr@a.pinggy.io
